@@ -13,7 +13,7 @@ thematic_shiny(font = "auto")
 
 ui <- fluidPage(
   theme = bs_theme(version = 5, bootswatch = "minty"),
-  h1("Exploration des Diamants"),
+  h2("Exploration des Diamants"),
   
   sidebarLayout(
     sidebarPanel(
@@ -56,12 +56,13 @@ server <- function(input, output, session) {
   })
   
   output$diamondsPlot <- renderPlot({
-    ggplot(data_filtered(), aes(x = price, y = carat)) +
-      geom_point(color = ifelse(input$couleur_rose == "Oui", "#f3969a", "black"), alpha = 0.5) +
+    ggplot(data_filtered(), aes(x = carat, y = price)) +
+      geom_point(color = ifelse(input$couleur_rose == "Oui", "#f3969a", "#5a5a5a")) +
       labs(
         title = glue("Prix : {input$prix} & color: {input$filtre_couleurs}"),
         x = "Prix",
-        y = "Carat"
+        y = "Carat", 
+        fill = "grey"
       ) +
       theme_minimal()
   })
