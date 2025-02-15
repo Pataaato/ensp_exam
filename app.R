@@ -55,16 +55,22 @@ server <- function(input, output, session) {
       filter(color == input$filtre_couleurs, price <= input$prix)
   })
   
+  
   output$diamondsPlot <- renderPlot({
     ggplot(data_filtered(), aes(x = carat, y = price)) +
       geom_point(color = ifelse(input$couleur_rose == "Oui", "#f3969a", "#5a5a5a")) +
       labs(
         title = glue("Prix : {input$prix} & color: {input$filtre_couleurs}"),
-        x = "Prix",
-        y = "Carat", 
-        fill = "grey"
+        x = "carat",
+        y = "price"
       ) +
-      theme_minimal()
+      theme_minimal()+
+      theme(
+        panel.background = element_rect(fill = "#f0f0f0", color = NA),  # Fond du panel (gris clair)
+        plot.background = element_rect(fill = "white", color = NA),   # Fond du plot (gris clair)
+        panel.grid.major = element_line(color = "white"),  # Grille principale blanche
+        panel.grid.minor = element_line(color = "white")   # Grille secondaire blanche
+      )
   })
   
 
@@ -74,7 +80,7 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$boutton, {
-    showNotification(glue("prix : {input$prix} & color: {input$filtre_couleurs}"), type = "message")
+    showNotification(glue("prix: {input$prix} & color: {input$filtre_couleurs}"), type = "message")
   })
 }
 
