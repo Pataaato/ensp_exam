@@ -52,7 +52,8 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   data_filtered <- reactive({
     diamonds %>%
-      filter(color == input$filtre_couleurs, price <= input$prix)
+      filter(color == input$filtre_couleurs, price <= input$prix) %>%
+    select(carat, cut, color, clarity, depth, table, price)
   })
   
   
@@ -60,16 +61,20 @@ server <- function(input, output, session) {
     ggplot(data_filtered(), aes(x = carat, y = price)) +
       geom_point(color = ifelse(input$couleur_rose == "Oui", "#f3969a", "#5a5a5a")) +
       labs(
-        title = glue("Prix : {input$prix} & color: {input$filtre_couleurs}"),
+        title = glue("prix : {input$prix} & color: {input$filtre_couleurs}"),
         x = "carat",
         y = "price"
       ) +
       theme_minimal()+
       theme(
-        panel.background = element_rect(fill = "#f0f0f0", color = NA),  # Fond du panel (gris clair)
-        plot.background = element_rect(fill = "white", color = NA),   # Fond du plot (gris clair)
-        panel.grid.major = element_line(color = "white"),  # Grille principale blanche
-        panel.grid.minor = element_line(color = "white")   # Grille secondaire blanche
+        text = element_text(family = "Monaco"),
+        title = element_text(family = "Monaco", color = "#5a5a5a"),  
+        axis.text = element_text(family = "Monaco", color = "#5a5a5a"),  
+        axis.title = element_text(family = "Monaco", color = "#5a5a5a"),  
+        panel.background = element_rect(fill = "#f0f0f0", color = NA),
+        plot.background = element_rect(fill = "white", color = NA),
+        panel.grid.major = element_line(color = "white"),
+        panel.grid.minor = element_line(color = "white")
       )
   })
   
