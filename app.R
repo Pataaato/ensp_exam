@@ -17,11 +17,18 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
+      radioButtons(
+        inputId = "couleur_rose", 
+        label = "Colorier les points en rose ?",
+        choices = c("Oui", "Non"), 
+        selected = "Oui", 
+        inline = TRUE
+      ),
+      
       selectInput(
         inputId = "filtre_couleurs",
-        choices = unique(diamonds$color),
-        label = "Choisir une couleur à filtrer :",
-        selected = "D"
+        choices = c("D", "E", "F", "G", "H", "I", "J"),
+        label = "Choisir une couleur à filtrer :"
       ),
       sliderInput(
         inputId = "prix",
@@ -49,22 +56,24 @@ server <- function(input, output, session) {
   })
   
   output$diamondsPlot <- renderPlot({
-    ggplot(data_filtered(), aes(x = price, y = carat, color = color)) +
-      geom_point(alpha = 0.5) +
+    ggplot(data_filtered(), aes(x = price, y = carat)) +
+      geom_point(color = ifelse(input$couleur_rose == "Oui", "#f3969a", "black"), alpha = 0.5) +
       labs(
-        title = glue("prix : {input$prix} & color: {input$filtre_couleurs}"),
+        title = glue("Prix : {input$prix} & color: {input$filtre_couleurs}"),
         x = "Prix",
         y = "Carat"
       ) +
       theme_minimal()
   })
   
+
+  
   output$diamonds_table <- renderDT({
     datatable(data_filtered())
   })
   
   observeEvent(input$boutton, {
-    showNotification(glue("Filtrage sur la couleur {input$filtre_couleurs} avec un prix max de {input$prix}"), type = "message")
+    showNotification(glue("prix : {input$prix} & color: {input$filtre_couleurs}"), type = "message")
   })
 }
 
